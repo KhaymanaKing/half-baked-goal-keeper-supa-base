@@ -17,6 +17,7 @@ const teamTwoSubtractButton = document.getElementById('team-two-subtract-button'
 const finishGameButton = document.getElementById('finishgamebutton');
 const teamOneLabel = document.getElementById('team-one-name');
 const teamTwoLabel = document.getElementById('team-two-name');
+const pastGamesEl = document.getElementById ('past-games-container');
 
 checkAuth();
 
@@ -30,10 +31,11 @@ let currentGame = {
 };
 
 nameForm.addEventListener = ('submit', (e) => {
+    e.preventDefault();
     const formData = new FormData(nameForm);
-  
-    const name1 = formData.get('team-1');
-    const name2 = formData.get('team-2');
+
+    const name1 = formData.get('team-one');
+    const name2 = formData.get('team-two');
 
     currentGame.name1 = name1;
     currentGame.name2 = name2;
@@ -81,6 +83,7 @@ function displayCurrentGameEl() {
 
 
 function displayAllGames() {
+    pastGamesEl.textContent = '';
     for (let game of pastGames) {
         const gameEl = displayGame(game);
 
@@ -101,7 +104,12 @@ finishGameButton.addEventListener('click', async() => {
     
     displayAllGames();
     
-    currentGame = {};
+    currentGame = {
+        name1: '',
+        name2: '',
+        score1: 0,
+        score2: 0,
+    };
 
     displayCurrentGameEl();
 });
@@ -113,8 +121,8 @@ logoutButton.addEventListener('click', () => {
     logout();
 });
 
-window.addEventListener('load', () => {
-    const games = getGames();
+window.addEventListener('load', async() => {
+    const games = await getGames();
 
     if (games) {
         pastGames = games;
